@@ -90,3 +90,18 @@ class CallRecordModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             record.save()
+
+    def test_record_type_and_call_unique_together(self):
+        record = CallRecord(id=1,
+                            call=self.call,
+                            record_type='start',
+                            timestamp=self.now)
+        record.save()
+
+        other_record = CallRecord(id=2,
+                                  call=self.call,
+                                  record_type='start',
+                                  timestamp=self.now)
+
+        with self.assertRaises(IntegrityError):
+            other_record.save()

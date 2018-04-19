@@ -1,5 +1,5 @@
 """
-WSGI config for project phone-billing.
+WSGI config for project phone_billing.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "phone-billing.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "phone_billing.settings")
 
 application = get_wsgi_application()

@@ -39,11 +39,18 @@ class TimestampFieldTestCase(TestCase):
 
         self.assertEquals(field.to_representation(now), int(now.timestamp()))
 
-    def test_to_internal_value_parses_timestamp_without_microseconds(self):
+    def test_to_internal_value_parses_float_timestamp_without_microseconds(self):
         field = TimestampField()
         now = timezone.now()
 
         self.assertEquals(field.to_internal_value(now.timestamp()),
+                          now.replace(microsecond=0))
+
+    def test_to_internal_value_parses_string_timestamp_without_microseconds(self):
+        field = TimestampField()
+        now = timezone.now()
+
+        self.assertEquals(field.to_internal_value(str(now.timestamp())),
                           now.replace(microsecond=0))
 
 

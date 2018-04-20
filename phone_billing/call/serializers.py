@@ -27,7 +27,7 @@ class TimestampField(serializers.DateTimeField):
         return int(value.timestamp())
 
     def to_internal_value(self, value):
-        dt = datetime.utcfromtimestamp(int(value))
+        dt = datetime.utcfromtimestamp(int(float(value)))
         return super().to_internal_value(dt)
 
 

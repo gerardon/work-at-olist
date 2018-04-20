@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from .call import urls as call_urls
+
+
 urlpatterns = [
-    #path('api/call/', include('call.urls', namespace='call')),
+    path('api/call/', include((call_urls, 'call'))),
     path('admin/', admin.site.urls),
 ]

@@ -106,13 +106,3 @@ class CallRecordModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             other_record.save()
-
-    def test_get_absolute_url(self):
-        record = CallRecord(id=1,
-                            call=self.call,
-                            record_type='start',
-                            timestamp=self.now)
-        record.save()
-
-        self.assertEquals(str(record.get_absolute_url()),
-                          str(reverse('call:record_detail', args=[record.id])))

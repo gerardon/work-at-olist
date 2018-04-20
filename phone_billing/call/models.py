@@ -20,6 +20,3 @@ class CallRecord(models.Model):
 
     class Meta:
         unique_together = ('call', 'record_type')
-
-    def get_absolute_url(self):
-        return reverse_lazy('call:record_detail', args=[self.id])

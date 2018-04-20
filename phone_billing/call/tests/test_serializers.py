@@ -1,10 +1,12 @@
+from model_mommy import mommy
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
-from ..models import Call
+from ..models import Call, CallRecord
 from ..serializers import PhoneField, TimestampField, CallRecordSerializer
 
 
@@ -173,3 +175,13 @@ class CallRecordSerializerTestCase(TestCase):
                           int(self.valid_start_data['timestamp']))
         self.assertEquals(call_record.call_id,
                           self.valid_start_data['call_id'])
+
+    def test_get_url(self):
+        record = mommy.make(CallRecord)
+        factory = RequestFactory()
+        request = factory.get('/api/call/records/')
+
+        serializer = CallRecordSerializer(record, context={'request': request})
+        self.assertEquals(str(serializer.get_url(record)),
+                          str(reverse('call:record_detail', args=[record.id],
+                                      request=request)))

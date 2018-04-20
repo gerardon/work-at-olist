@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from rest_framework.reverse import reverse_lazy
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -39,7 +40,7 @@ class CallRecordSerializer(serializers.ModelSerializer):
     call_id = serializers.IntegerField(min_value=0)
     source = PhoneField(source='call.source', required=False)
     destination = PhoneField(source='call.destination', required=False)
-    url = serializers.URLField(read_only=True, source='get_absolute_url')
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = CallRecord
@@ -50,6 +51,10 @@ class CallRecordSerializer(serializers.ModelSerializer):
                 queryset=model.objects.all(),
                 fields=('record_type', 'call_id'),
                 message='This call_id already has this type of call record.')]
+
+    def get_url(self, instance):
+        return reverse_lazy('call:record_detail', args=[instance.id],
+                            request=self.context['request'])
 
     def validate(self, data):
         if data['record_type'] == 'start':

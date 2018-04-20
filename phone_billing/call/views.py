@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 
 from .models import CallRecord
 from .serializers import CallRecordSerializer
@@ -16,3 +16,8 @@ class CallRecordsListCreate(ListCreateAPIView):
                 kwargs['instance'] = qs.get()
 
         return super().get_serializer(*args, **kwargs)
+
+
+class CallRecordRetrieveUpdate(RetrieveUpdateAPIView):
+    queryset = CallRecord.objects.all()
+    serializer_class = CallRecordSerializer

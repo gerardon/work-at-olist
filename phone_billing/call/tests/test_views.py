@@ -1,3 +1,4 @@
+import json
 from model_mommy import mommy
 
 from django.test import TestCase
@@ -36,7 +37,9 @@ class CallRecordsListCreateTestCase(TestCase):
         self.assertEquals(Call.objects.count(), 0)
         self.assertEquals(CallRecord.objects.count(), 0)
 
-        response = self.client.post(self.url, self.start_record_post_data)
+        response = self.client.post(self.url,
+                                    json.dumps(self.start_record_post_data),
+                                    content_type='application/json')
 
         self.assertEquals(response.status_code, 201)
 
@@ -63,3 +66,44 @@ class CallRecordsListCreateTestCase(TestCase):
 
         record = CallRecord.objects.get()
         self.assertEquals(record.timestamp, right_now.replace(microsecond=0))
+
+
+class CallRecordRetrieveUpdateTestCase(TestCase):
+    def setUp(self):
+        self.record = mommy.make(CallRecord)
+
+        self.url = reverse('call:record_detail', args=[self.record.id])
+
+    def test_get_responds_serialized_record(self):
+        response = self.client.get(self.url)
+
+        self.assertEquals(response.status_code, 200)
+        data = response.json()
+
+        serialized_record = CallRecordSerializer(self.record).data
+        self.assertEquals(serialized_record, data)
+
+    def test_put_should_update_record(self):
+        put_data = {
+            'id': self.record.id,
+            'type': 'start',
+            'timestamp': timezone.now().timestamp(),
+            'call_id': self.record.call.id,
+            'source': '00123456789',
+            'destination': '10123456789',
+        }
+        response = self.client.put(self.url, json.dumps(put_data),
+                                   content_type='application/json')
+
+        self.assertEquals(response.status_code, 200)
+
+        self.record.refresh_from_db()
+        self.record.call.refresh_from_db()
+        self.assertEquals(self.record.id, put_data['id'])
+        self.assertEquals(self.record.record_type, put_data['type'])
+        self.assertEquals(self.record.timestamp.timestamp(),
+                          int(put_data['timestamp']))
+        self.assertEquals(self.record.call_id, put_data['call_id'])
+        self.assertEquals(self.record.call.source, put_data['source'])
+        self.assertEquals(self.record.call.destination,
+                          put_data['destination'])

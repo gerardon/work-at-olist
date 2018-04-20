@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse_lazy
 
 
 class Call(models.Model):
@@ -19,3 +20,6 @@ class CallRecord(models.Model):
 
     class Meta:
         unique_together = ('call', 'record_type')
+
+    def get_absolute_url(self):
+        return reverse_lazy('call:record_detail', args=[self.id])

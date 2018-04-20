@@ -39,10 +39,11 @@ class CallRecordSerializer(serializers.ModelSerializer):
     call_id = serializers.IntegerField(min_value=0)
     source = PhoneField(source='call.source', required=False)
     destination = PhoneField(source='call.destination', required=False)
+    url = serializers.URLField(read_only=True, source='get_absolute_url')
 
     class Meta:
         model = CallRecord
-        fields = ('id', 'type', 'timestamp',
+        fields = ('id', 'type', 'timestamp', 'url',
                   'call_id', 'source', 'destination')
         validators = [
             UniqueTogetherValidator(

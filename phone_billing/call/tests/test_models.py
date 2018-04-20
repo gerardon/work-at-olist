@@ -1,5 +1,6 @@
 from django.db.utils import IntegrityError, DataError
 from django.test import TestCase
+from django.urls import reverse
 from django.utils.timezone import now
 
 from ..models import Call, CallRecord
@@ -105,3 +106,13 @@ class CallRecordModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             other_record.save()
+
+    def test_get_absolute_url(self):
+        record = CallRecord(id=1,
+                            call=self.call,
+                            record_type='start',
+                            timestamp=self.now)
+        record.save()
+
+        self.assertEquals(str(record.get_absolute_url()),
+                          str(reverse('call:record_detail', args=[record.id])))

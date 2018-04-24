@@ -2,6 +2,11 @@ from datetime import time
 from decimal import Decimal
 
 
+def calculate_call_charge(call_start, call_end):
+    Tariff = get_tariff(call_end)
+    return Tariff.calculate(call_end - call_start)
+
+
 def get_tariff(call_dt):
     call_time = call_dt.time()
 

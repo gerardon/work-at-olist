@@ -1,10 +1,11 @@
 from datetime import time, datetime, timedelta
 from decimal import Decimal
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from django.test import TestCase
 
-from ..pricing import BaseTariff, StandardTariff, ReducedTariff, get_tariff
+from ..pricing import (BaseTariff, StandardTariff, ReducedTariff,
+                       get_tariff, calculate_call_charge)
 
 
 class BaseTariffTestCase(TestCase):
@@ -119,3 +120,18 @@ class GetTariffTestCase(TestCase):
         reduced_applicable.return_value = True
 
         self.assertEquals(get_tariff(datetime.now()), ReducedTariff)
+
+
+class CalculateCallChargeTestCase(TestCase):
+    @patch('phone_billing.bill.pricing.get_tariff')
+    def test_calculate_call_charge(self, mocked_get_tariff):
+        MockedTariff = Mock()
+        mocked_get_tariff.return_value = MockedTariff
+
+        call_end = datetime.now()
+        call_start = call_end - timedelta(hours=1)
+
+        calculate_call_charge(call_start, call_end)
+
+        mocked_get_tariff.assert_called_once_with(call_end)
+        MockedTariff.calculate.assert_called_once_with(call_end - call_start)

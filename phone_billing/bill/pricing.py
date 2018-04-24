@@ -24,6 +24,16 @@ class BaseTariff:
         else:
             return call_time < cls.end_time or call_time >= cls.start_time
 
+    @classmethod
+    def calculate(cls, call_duration):
+        called_minutes = cls.get_called_minutes(call_duration)
+        return cls.standing_charge + (cls.charge_per_minute * called_minutes)
+
+    @classmethod
+    def get_called_minutes(cls, call_duration):
+        called_seconds = call_duration.total_seconds()
+        return called_seconds // 60
+
 
 class StandardTariff(BaseTariff):
     charge_per_minute = Decimal('0.09')

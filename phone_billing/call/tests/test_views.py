@@ -1,18 +1,18 @@
 import json
 from model_mommy import mommy
 
-from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
+from rest_framework.test import APITestCase, APIRequestFactory
 
 from ..models import Call, CallRecord
 from ..serializers import CallRecordSerializer
 
 
-class SerializerContextTestCase(TestCase):
+class SerializerContextTestCase(APITestCase):
     def setUp(self):
-        factory = RequestFactory()
-        request = factory.get('/api/')
+        factory = APIRequestFactory()
+        request = factory.get('/api/', format='json')
         self.serializer_context = {'request': request}
 
 
@@ -35,33 +35,29 @@ class CallRecordsListCreateTestCase(SerializerContextTestCase):
         response = self.client.get(self.url)
 
         self.assertEquals(response.status_code, 200)
-        data = response.json()
 
         for record in records:
             serialized_record = CallRecordSerializer(
                 record, context=self.serializer_context
             ).data
-            self.assertIn(serialized_record, data)
+            self.assertIn(serialized_record, response.data)
 
     def test_post_creates_a_new_record(self):
         self.assertEquals(Call.objects.count(), 0)
         self.assertEquals(CallRecord.objects.count(), 0)
 
-        response = self.client.post(self.url,
-                                    json.dumps(self.start_record_post_data),
-                                    content_type='application/json')
+        response = self.client.post(self.url, self.start_record_post_data)
 
         self.assertEquals(response.status_code, 201)
 
         self.assertEquals(Call.objects.count(), 1)
         self.assertEquals(CallRecord.objects.count(), 1)
 
-        data = response.json()
         record = CallRecord.objects.get()
         serialized_record = CallRecordSerializer(
             record, context=self.serializer_context
         ).data
-        self.assertEquals(serialized_record, data)
+        self.assertEquals(serialized_record, response.data)
 
     def test_post_updates_record_if_already_created(self):
         self.client.post(self.url, self.start_record_post_data)
@@ -91,12 +87,11 @@ class CallRecordRetrieveUpdateTestCase(SerializerContextTestCase):
         response = self.client.get(self.url)
 
         self.assertEquals(response.status_code, 200)
-        data = response.json()
 
         serialized_record = CallRecordSerializer(
             self.record, context=self.serializer_context
         ).data
-        self.assertEquals(serialized_record, data)
+        self.assertEquals(serialized_record, response.data)
 
     def test_put_should_update_record(self):
         put_data = {
@@ -107,8 +102,7 @@ class CallRecordRetrieveUpdateTestCase(SerializerContextTestCase):
             'source': '00123456789',
             'destination': '10123456789',
         }
-        response = self.client.put(self.url, json.dumps(put_data),
-                                   content_type='application/json')
+        response = self.client.put(self.url, put_data)
 
         self.assertEquals(response.status_code, 200)
 

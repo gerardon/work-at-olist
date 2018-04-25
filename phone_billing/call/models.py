@@ -38,3 +38,9 @@ class CallRecord(models.Model):
 
     class Meta:
         unique_together = ('call', 'record_type')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        from ..bill.receivers import bill_call_record
+        bill_call_record(self)

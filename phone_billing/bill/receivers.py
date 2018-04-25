@@ -1,8 +1,3 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-from ..call.models import CallRecord
-
 from .models import BillRecord
 
 

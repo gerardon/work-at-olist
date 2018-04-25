@@ -1,4 +1,6 @@
 from datetime import timedelta
+from unittest.mock import patch
+
 from django.db.utils import IntegrityError, DataError
 from django.test import TestCase
 from django.urls import reverse
@@ -187,3 +189,14 @@ class CallRecordModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             other_record.save()
+
+    @patch('phone_billing.bill.receivers.bill_call_record')
+    def test_after_save_should_call_bill_record_receiver(self, mocked_receiver):
+        record = CallRecord(id=1,
+                            call=self.call,
+                            record_type='start',
+                            timestamp=self.now)
+
+        record.save()
+
+        mocked_receiver.assert_called_once_with(record)

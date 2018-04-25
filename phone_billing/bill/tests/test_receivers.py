@@ -24,44 +24,26 @@ class BillCallRecordReceiverTestCase(TestCase):
 
     @patch.object(BillRecord.objects, 'create_for_call')
     def test_bill_call_record_receiver_with_created_end_record(self, mocked_manager):
-        sender = CallRecord
-        bill_call_record(sender, instance=self.call.end_record, created=True)
+        bill_call_record(instance=self.call.end_record)
 
         mocked_manager.assert_called_once_with(self.call)
 
     @patch.object(BillRecord.objects, 'create_for_call')
     def test_bill_call_record_receiver_with_created_start_record(self, mocked_manager):
-        sender = CallRecord
-        bill_call_record(sender, instance=self.call.start_record, created=True)
+        bill_call_record(instance=self.call.start_record)
 
         mocked_manager.assert_called_once_with(self.call)
 
     @patch.object(BillRecord.objects, 'create_for_call')
-    def test_bill_call_record_receiver_with_updated_end_record(self, mocked_manager):
-        sender = CallRecord
-        bill_call_record(sender, instance=self.call.end_record, created=False)
-
-        mocked_manager.assert_not_called()
-
-    @patch.object(BillRecord.objects, 'create_for_call')
-    def test_bill_call_record_receiver_with_updated_start_record(self, mocked_manager):
-        sender = CallRecord
-        bill_call_record(sender, instance=self.call.end_record, created=False)
-
-        mocked_manager.assert_not_called()
-
-    @patch.object(BillRecord.objects, 'create_for_call')
     def test_bill_call_record_receiver_with_no_end_record(self, mocked_manager):
-        sender = CallRecord
         self.end_record.delete()
-        bill_call_record(sender, instance=self.call.start_record, created=False)
+        bill_call_record(instance=self.call.start_record)
 
         mocked_manager.assert_not_called()
 
     @patch.object(BillRecord.objects, 'create_for_call')
     def test_bill_call_record_receiver_with_no_start_record(self, mocked_manager):
-        sender = CallRecord
         self.start_record.delete()
-        bill_call_record(sender, instance=self.call.end_record, created=False)
+        bill_call_record(instance=self.call.end_record)
 
         mocked_manager.assert_not_called()

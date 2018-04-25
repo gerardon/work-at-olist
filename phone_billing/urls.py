@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 from .call import urls as call_urls
+from .bill import urls as bill_urls
 
 
 urlpatterns = [
     path('api/call/', include((call_urls, 'call'))),
+    path('api/bill/', include((bill_urls, 'bill'))),
     path('admin/', admin.site.urls),
 ]

@@ -18,6 +18,11 @@ class Call(models.Model):
             return self.end_record.timestamp
 
     @property
+    def duration(self):
+        if self.started_at and self.ended_at:
+            return self.ended_at - self.started_at
+
+    @property
     def start_record(self):
         return self.records.filter(record_type='start').last()
 

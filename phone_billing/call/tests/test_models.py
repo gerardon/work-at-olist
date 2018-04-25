@@ -119,6 +119,40 @@ class CallModelTestCase(TestCase):
 
         self.assertIsNone(call.ended_at)
 
+    def test_duration_property(self):
+        duration = timedelta(minutes=5)
+        end_stamp = timezone.now()
+        start_stamp = end_stamp - duration
+
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        CallRecord.objects.create(id=1, call=call,
+                                  record_type='start',
+                                  timestamp=start_stamp)
+        CallRecord.objects.create(id=2, call=call,
+                                  record_type='end',
+                                  timestamp=end_stamp)
+
+        self.assertEquals(call.duration, duration)
+
+    def test_duration_property_if_missing_end_record(self):
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        CallRecord.objects.create(id=1, call=call,
+                                  record_type='start',
+                                  timestamp=timezone.now())
+
+        self.assertIsNone(call.duration)
+
+    def test_duration_property_if_missing_start_record(self):
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        CallRecord.objects.create(id=2, call=call,
+                                  record_type='end',
+                                  timestamp=timezone.now())
+
+        self.assertIsNone(call.duration)
+
 
 class CallRecordModelTestCase(TestCase):
 

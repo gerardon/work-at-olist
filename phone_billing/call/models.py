@@ -21,7 +21,7 @@ class Call(models.Model):
 
     @property
     def end_record(self):
-        return self.records.get(record_type='end')
+        return self.records.filter(record_type='end').last()
 
 
 class CallRecord(models.Model):

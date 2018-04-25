@@ -17,5 +17,5 @@ class BillRecordManager(models.Manager):
 class BillRecord(models.Model):
     objects = BillRecordManager()
 
-    call = models.ForeignKey(Call, on_delete=models.CASCADE)
+    call = models.OneToOneField(Call, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)

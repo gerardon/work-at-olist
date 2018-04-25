@@ -9,15 +9,17 @@ class Call(models.Model):
 
     @property
     def started_at(self):
-        return self.start_record.timestamp
+        if self.start_record:
+            return self.start_record.timestamp
 
     @property
     def ended_at(self):
-        return self.end_record.timestamp
+        if self.end_record:
+            return self.end_record.timestamp
 
     @property
     def start_record(self):
-        return self.records.get(record_type='start')
+        return self.records.filter(record_type='start').last()
 
     @property
     def end_record(self):

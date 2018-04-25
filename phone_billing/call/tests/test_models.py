@@ -63,13 +63,15 @@ class CallModelTestCase(TestCase):
 
         self.assertEquals(call.end_record.id, record.id)
 
-    def test_end_record_property_if_missing_record(self):
-        now = timezone.now()
+    def test_start_record_property_if_missing_record(self):
         call = Call.objects.create(id=1, source='00123456789',
                                    destination='00123456789')
 
-        CallRecord.objects.create(id=1, call=call,
-                                  record_type='start', timestamp=now)
+        self.assertIsNone(call.start_record)
+
+    def test_end_record_property_if_missing_record(self):
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
 
         self.assertIsNone(call.end_record)
 
@@ -102,6 +104,18 @@ class CallModelTestCase(TestCase):
                                   timestamp=end_stamp)
 
         self.assertEquals(call.ended_at, end_stamp)
+
+    def test_started_at_property_if_missing_record(self):
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+
+        self.assertIsNone(call.started_at)
+
+    def test_ended_at_property_if_missing_record(self):
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+
+        self.assertIsNone(call.ended_at)
 
 
 class CallRecordModelTestCase(TestCase):

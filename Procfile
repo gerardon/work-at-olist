@@ -1,2 +1,2 @@
-release: ./release_tasks.sh
+release: python manage.py migrate
 web: gunicorn phone_billing.wsgi

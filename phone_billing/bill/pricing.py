@@ -37,7 +37,7 @@ class BaseTariff:
     @classmethod
     def get_called_minutes(cls, call_duration):
         called_seconds = call_duration.total_seconds()
-        return called_seconds // 60
+        return int(called_seconds // 60)
 
 
 class StandardTariff(BaseTariff):

@@ -7,6 +7,22 @@ class Call(models.Model):
     source = models.CharField(max_length=11)
     destination = models.CharField(max_length=11)
 
+    @property
+    def started_at(self):
+        return self.start_record.timestamp
+
+    @property
+    def ended_at(self):
+        return self.end_record.timestamp
+
+    @property
+    def start_record(self):
+        return self.records.get(record_type='start')
+
+    @property
+    def end_record(self):
+        return self.records.get(record_type='end')
+
 
 class CallRecord(models.Model):
     RECORD_TYPES = (
@@ -14,7 +30,7 @@ class CallRecord(models.Model):
         ('end', 'End'),
     )
     id = models.PositiveIntegerField(primary_key=True)
-    call = models.ForeignKey(Call, on_delete=True)
+    call = models.ForeignKey(Call, on_delete=True, related_name='records')
     record_type = models.CharField(max_length=5, choices=RECORD_TYPES)
     timestamp = models.DateTimeField()
 

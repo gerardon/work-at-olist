@@ -1,7 +1,8 @@
+from datetime import timedelta
 from django.db.utils import IntegrityError, DataError
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ..models import Call, CallRecord
 
@@ -36,6 +37,62 @@ class CallModelTestCase(TestCase):
         with self.assertRaises(DataError):
             call.save()
 
+    def test_start_record_property(self):
+        now = timezone.now()
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        record = CallRecord.objects.create(id=1, call=call,
+                                           record_type='start', timestamp=now)
+
+        CallRecord.objects.create(id=2, call=call,
+                                  record_type='end',
+                                  timestamp=now)
+
+        self.assertEquals(call.start_record.id, record.id)
+
+    def test_end_record_property(self):
+        now = timezone.now()
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+
+        CallRecord.objects.create(id=1, call=call,
+                                  record_type='start', timestamp=now)
+        record = CallRecord.objects.create(id=2, call=call,
+                                           record_type='end',
+                                           timestamp=now)
+
+        self.assertEquals(call.end_record.id, record.id)
+
+    def test_started_at_property(self):
+        end_stamp = timezone.now()
+        start_stamp = end_stamp - timedelta(minutes=5)
+
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        CallRecord.objects.create(id=1, call=call,
+                                  record_type='start',
+                                  timestamp=start_stamp)
+        CallRecord.objects.create(id=2, call=call,
+                                  record_type='end',
+                                  timestamp=end_stamp)
+
+        self.assertEquals(call.started_at, start_stamp)
+
+    def test_ended_at_property(self):
+        end_stamp = timezone.now()
+        start_stamp = end_stamp - timedelta(minutes=5)
+
+        call = Call.objects.create(id=1, source='00123456789',
+                                   destination='00123456789')
+        CallRecord.objects.create(id=1, call=call,
+                                  record_type='start',
+                                  timestamp=start_stamp)
+        CallRecord.objects.create(id=2, call=call,
+                                  record_type='end',
+                                  timestamp=end_stamp)
+
+        self.assertEquals(call.ended_at, end_stamp)
+
 
 class CallRecordModelTestCase(TestCase):
 
@@ -43,7 +100,7 @@ class CallRecordModelTestCase(TestCase):
         self.call = Call.objects.create(id=1,
                                         source='00123456789',
                                         destination='00123456789')
-        self.now = now()
+        self.now = timezone.now()
 
     def test_valid_record(self):
         record = CallRecord(id=1,

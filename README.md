@@ -1,6 +1,6 @@
 # Olist Challenge
 
-This is my take on the dev challenge for Olist. The goal was to implement an API that recorded Call Records and generated Bill Records based on those. The system needed to be flexible on receiving data due to the unclear communication flow of our clients.
+This is my take on the dev challenge for Olist. The goal was to implement an API that recorded Call Records and generated Bill Records based on those. The system needed to be flexible on receiving data due to the unclear communication flow of our clients. This project was developed trying to preserve HTTP REST paradigms while attending the requirements for the challenge, and for that some compromises had to be made.
 
 
 ## Project Setup
@@ -161,6 +161,7 @@ This endpoint updates a specific Call Record given its `id`. This will **NOT** u
 For `start` Call Records:
 ```
     {
+        "id": 141,
         "type": "start",
         "timestamp": 1513091233,
         "url": "https://olist-challenge.herokuapp.com/api/call/record/141/",
@@ -173,6 +174,7 @@ For `start` Call Records:
 For `end` Call Records:
 ```
     {
+        "id": 142,
         "type": "end",
         "timestamp": 1513091233,
         "url": "https://olist-challenge.herokuapp.com/api/call/record/141/",

@@ -39,6 +39,14 @@ class BillRecordTestCase(TestCase):
 
         mocked_service.assert_called_once_with('started_at', 'ended_at')
 
+    def test_create_for_call_manager_when_bill_already_created(self):
+        old_record = BillRecord.objects.create(call=self.call,
+                                               price=Decimal('1'))
+
+        record = BillRecord.objects.create_for_call(self.call)
+
+        self.assertEquals(old_record.id, record.id)
+
     def test_only_one_bill_record_per_call(self):
         record = BillRecord(call=self.call, price=Decimal('1'))
         record.save()

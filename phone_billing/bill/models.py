@@ -8,6 +8,10 @@ from .pricing import calculate_call_charge
 class BillRecordManager(models.Manager):
 
     def create_for_call(self, call):
+        old_record = self.filter(call_id=call.id)
+        if old_record.exists():
+            return old_record.get()
+
         return self.create(
             call_id=call.id,
             price=calculate_call_charge(call.started_at, call.ended_at)

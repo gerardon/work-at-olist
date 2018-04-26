@@ -1,6 +1,6 @@
 # Olist Challenge
 
-This is my take on the dev challenge for Olist. The goal was to implement an API that recorded Call Records and generated Bill Records based on those. The system needed to be flexible on receiving data due to the unclear communication flow of our clients. This project was developed trying to preserve HTTP REST paradigms while attending the requirements for the challenge, and for that some compromises had to be made.
+This is my take on the dev challenge for Olist. The goal was to implement an API that recorded Call Records and generated Bill Records based on those. The system needed to be flexible on receiving data due to the unclear communication flow of our clients. This project was developed trying to preserve HTTP REST paradigms while attending the requirements for the challenge, and because of that some compromises had to be made.
 
 
 ## Project Setup
@@ -34,12 +34,13 @@ python manage.py test
 ### Environment
 I tried to minimize the requirements of this project, using as few libraries as possible.
 This project was developed using:
-`Thinkpad T430` running `Manjaro Linux`
-`vim`
-`zsh`
-`Django 2.0`
-`Python 3.6`
-`djangorestframework 3.8.2`
+
+* `Thinkpad T430` running `Manjaro Linux`
+* `vim`
+* `zsh`
+* `Django 2.0`
+* `Python 3.6`
+* `djangorestframework 3.8.2`
 
 
 ## API Documentation
@@ -74,7 +75,7 @@ This endpoint creates a Call Record. If a Call Record with the same unique `id` 
 `POST https://olist-challenge.herokuapp.com/api/call/records/`
 
 #### Expected Body
-For `start` Call Records:
+For `"start"` Call Records:
 ```
     {
         "id": 141,
@@ -86,7 +87,7 @@ For `start` Call Records:
     }
 ```
 
-For `end` Call Records:
+For `"end"` Call Records:
 ```
     {
         "id": 142,
@@ -133,7 +134,7 @@ This endpoint retrieves a specific Call Record given its `id`.
 
 #### Example response
 `Status Code: 200 OK`
-```                                                                                    `
+```
     {
         "id": 141,
         "type": "start",
@@ -155,10 +156,10 @@ Status Code | Description
 This endpoint updates a specific Call Record given its `id`. This will **NOT** update its related Bill Record.
 
 #### HTTP Request
-` https://olist-challenge.herokuapp.com/api/call/record/<:id>/`
+`PUT https://olist-challenge.herokuapp.com/api/call/record/<:id>/`
 
 #### Expected Body
-For `start` Call Records:
+For `"start"` Call Records:
 ```
     {
         "id": 141,
@@ -171,7 +172,7 @@ For `start` Call Records:
     }
 ```
 
-For `end` Call Records:
+For `"end"` Call Records:
 ```
     {
         "id": 142,
@@ -180,7 +181,6 @@ For `end` Call Records:
         "url": "https://olist-challenge.herokuapp.com/api/call/record/141/",
         "call_id": 71
     }
-
 ```
 
 Attribute | Accepted Type | Description
@@ -203,7 +203,6 @@ Attribute | Accepted Type | Description
         "source": "99988526423",
         "destination": "9993468278"
     }
-
 ```
 
 #### Other Responses

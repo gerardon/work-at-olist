@@ -100,8 +100,11 @@ class BillSerializerTestCase(TestCase):
 
     def test_get_default_period(self):
         serializer = BillSerializer(data={'subscriber': self.subscriber})
+        self.assertTrue(serializer.is_valid())
 
-        self.assertEquals(serializer.get_default_period(),
+        self.assertEquals(serializer.get_period(),
+                          self.last_month.date())
+        self.assertEquals(serializer.validated_data['period'],
                           self.last_month.date())
 
     def test_filter_calls_by_subscriber(self):

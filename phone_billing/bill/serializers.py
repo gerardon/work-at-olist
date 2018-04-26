@@ -34,15 +34,16 @@ class BillSerializer(serializers.Serializer):
     def filter_calls_by_subscriber(self):
         return Call.objects.filter(source=self.validated_data['subscriber'])
 
-    def get_default_period(self):
-        today = timezone.now().date()
-        return today.replace(month=today.month - 1)
+    def get_period(self):
+        if not self.validated_data.get('period'):
+            today = timezone.now().date()
+            last_month = today.replace(month=today.month - 1)
+            self.validated_data['period'] = last_month
+
+        return self.validated_data['period']
 
     def filter_calls_by_period(self, calls):
-        period = self.validated_data.get('period')
-        if not period:
-            period = self.get_default_period()
-
+        period = self.get_period()
         return CallRecord.objects.filter(
             record_type='end', timestamp__month=period.month,
             timestamp__year=period.year, call__in=calls
